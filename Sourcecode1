@@ -1,0 +1,69 @@
+<html>
+  <head>
+  	<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-235667303-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-235667303-1');
+</script>
+
+  	<meta charset = "utf-8">
+    <meta name = "viewport" content = "width=device-width, initial-scale=1.125">
+    <meta name = "keywords" content = "guitars, business, classes">
+    <meta name = "author" content = "Tron"
+    <title>TheElectricLegacy/Home</title>
+  </head>
+	<body>
+  <body background ="https://images.pexels.com/photos/3139473/pexels-photo-3139473.jpeg?cs=srgb&dl=pexels-ave-calvar-martinez-3139473.jpg">
+		<header>
+    	<nav>
+      <left>
+      	<ul>
+        <font color = "white">
+          <li><a target="_blank" href = "https://x20web.corp.google.com/users/vy/vyomd/TheElectricLegacy/Home">Home</a></li>
+          <li><a target="_blank" href = "https://x20web.corp.google.com/users/vy/vyomd/TheElectricLegacy/About_Us">Store</a></li>
+          <b>
+          <li><a target="_blank" href = "https://x20web.corp.google.com/users/vy/vyomd/TheElectricLegacy/About_Us">About</a></li>
+          </b>
+        </font>
+        </ul>
+       </left>
+      </nav>
+      </left>
+      <center>
+      <h1><font color = "white">The Electric Legacy</font></h1>
+      </center>
+     </header>
+     <section>
+        <center>
+      	<b>
+        <h2>Home</h2>
+        </b>
+        <img src = "https://images.pexels.com/photos/63695/pexels-photo-63695.jpeg?cs=srgb&dl=pexels-stephen-niemeier-63695.jpg&fm=jpg" width = "640" height = "426">
+        <font color = "white">
+				<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially 			unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+      </p>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus interdum id orci a posuere. Etiam at augue pellentesque, fermentum tellus eget, lobortis metus. Nam vulputate pellentesque leo sed auctor. Duis eget lectus quam. Maecenas lacinia laoreet tristique. Duis vel tincidunt neque. Suspendisse aliquam et est ac venenatis. Vivamus imperdiet, dolor sit amet pulvinar sollicitudin, orci tortor dapibus magna, vel congue massa sem eu nulla. Aliquam a magna nec neque euismod suscipit et non dolor. Nulla eget leo dignissim, semper massa ut, volutpat felis. Suspendisse laoreet quam nibh, sit amet vulputate sapien auctor id. Sed sed dignissim tortor. Duis vel tincidunt neque. Suspendisse aliquam et est ac venenatis. Vivamus imperdiet, dolor sit amet pulvinar sollicitudin, orci tortor dapibus magna, vel congue massa sem eu nulla. Aliquam a magna nec neque euismod suscipit et non dolor. Nulla eget leo dignissim, semper massa ut, volutpat felis. Suspendisse laoreet quam nibh, sit amet vulputate sapien auctor id. Sed sed dignissim tortor.Duis vel tincidunt neque. Suspendisse aliquam et est ac venenatis. Vivamus imperdiet, dolor sit amet pulvinar sollicitudin, orci tortor dapibus magna, vel congue massa.
+      </p>
+      </font>
+			</section>
+      </center>
+      <footer>
+      <font color = "white">
+      	<h3> Blues Guitars </h3>
+       </font>
+        <ul>
+        <font color = "white">
+        	<li><img src = "https://cdn11.bigcommerce.com/s-0irdm/products/1463/images/8313/apifztcmo__03615.1457814626.510.510.jpg" width = "300" height = "300">
+          <b> Paul Reed Smith</b></li>
+          <li><img src = "https://c4.wallpaperflare.com/wallpaper/434/619/752/guitar-running-fender-wallpaper-preview.jpg" width = "300" height = "300"> <b> Fender Stratocaster</b> </li>
+          <li><img src = "https://cdn.shopify.com/s/files/1/0255/8659/7968/products/IMG_9550-2.jpg" width = "300" height = "400"> <b> Gibson Les Paul</b> </li>
+         </font>
+         </ul>
+</body>
+</html>
+		</header>
+	<body>
