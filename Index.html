@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <title>Executive Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      body { 
+        font-family: 'Inter', sans-serif; 
+      }
+      .kpi-card { 
+        transition: all 0.2s ease-in-out; 
+      }
+      .kpi-card:hover { 
+        transform: translateY(-5px); 
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); 
+      }
+      #loader { 
+        border-top-color: #3b82f6;
+      }
+      .form-input-dark {
+        background-color: #374151;
+        border-color: #4b5563;
+        color: #f3f4f6;
+      }
+      .form-input-dark:focus {
+        border-color: #4f46e5;
+        box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.5);
+      }
+      .form-select-dark {
+        /* Reset browser-native appearance */
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+
+        /* Custom arrow styling */
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 0.5rem center;
+        background-size: 1.5em 1.5em;
+        padding-right: 2.5rem; /* Add space for the arrow */
+
+        /* Base styles */
+        background-color: #374151;
+        border-color: #4b5563;
+        color: #f3f4f6;
+      }
+    </style>
+  </head>
+  <body class="bg-slate-900 text-slate-200">
+    <div id="app" class="container mx-auto p-4 md:p-6">
+      <!-- Header -->
+      <header class="mb-6">
+        <h1 class="text-3xl font-bold text-white">Executive Task Dashboard</h1>
+        <p class="text-slate-400 mt-1">Real-time overview of project status and team performance.</p>
+      </header>
+
+      <!-- Loading Spinner -->
+      <div id="loader" class="w-16 h-16 border-4 border-slate-700 border-solid rounded-full animate-spin mx-auto mt-20"></div>
+      
+      <!-- Main Content -->
+      <main id="mainContent" class="hidden">
+        <!-- KPI Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+          <div class="kpi-card bg-slate-800 p-6 rounded-xl shadow-lg border-l-4 border-blue-500"><h2 class="text-slate-400 text-sm font-medium">TOTAL TASKS</h2><p id="kpi-total-tasks" class="text-3xl font-bold mt-1 text-white">0</p></div>
+          <div class="kpi-card bg-slate-800 p-6 rounded-xl shadow-lg border-l-4 border-green-500"><h2 class="text-slate-400 text-sm font-medium">COMPLETED</h2><p id="kpi-completed" class="text-3xl font-bold mt-1 text-white">0</p></div>
+          <div class="kpi-card bg-slate-800 p-6 rounded-xl shadow-lg border-l-4 border-yellow-500"><h2 class="text-slate-400 text-sm font-medium">IN PROGRESS</h2><p id="kpi-in-progress" class="text-3xl font-bold mt-1 text-white">0</p></div>
+          <div class="kpi-card bg-slate-800 p-6 rounded-xl shadow-lg border-l-4 border-red-500"><h2 class="text-slate-400 text-sm font-medium">OVERDUE</h2><p id="kpi-overdue" class="text-3xl font-bold mt-1 text-white">0</p></div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="space-y-6">
+            <div class="bg-slate-800 p-6 rounded-xl shadow-lg"><h3 class="font-semibold text-lg mb-4 text-white">Task Completions This Week</h3><div id="timeSeriesChart"></div></div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="bg-slate-800 p-6 rounded-xl shadow-lg"><h3 class="font-semibold text-lg mb-4 text-white">Task Status Breakdown</h3><div id="statusChart"></div></div>
+                <div class="bg-slate-800 p-6 rounded-xl shadow-lg"><h3 class="font-semibold text-lg mb-4 text-white">Tasks by Priority</h3><div id="priorityChart"></div></div>
+            </div>
+        </div>
+
+        <!-- Task List -->
+        <div class="bg-slate-800 p-6 rounded-xl shadow-lg mt-6">
+          <div class="flex flex-wrap justify-between items-center mb-4 gap-4"><h3 class="font-semibold text-lg text-white">Master Task List</h3><button id="showAddTaskModal" class="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 transition">Add New Task</button></div>
+          <div class="overflow-x-auto"><table class="min-w-full divide-y divide-slate-700"><thead class="bg-slate-700"><tr><th class="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">Task Name</th><th class="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">Assignee</th><th class="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">Due Date</th><th class="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">Priority</th><th class="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">Status</th></tr></thead><tbody id="taskList" class="bg-slate-800 divide-y divide-slate-700"></tbody></table></div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Add Task Modal -->
+    <div id="addTaskModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden">
+        <div class="bg-slate-800 p-8 rounded-lg shadow-xl max-w-lg w-full border border-slate-700">
+            <h2 class="text-2xl font-bold mb-6 text-white">Add New Task</h2>
+            <form id="addTaskForm" class="space-y-4">
+                <div>
+                    <label for="taskName" class="block text-sm font-medium text-slate-300 mb-1">Task Name</label>
+                    <input type="text" id="taskName" class="block w-full p-2 border rounded-md shadow-sm form-input-dark" required>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="assignee" class="block text-sm font-medium text-slate-300 mb-1">Assignee</label>
+                        <input type="text" id="assignee" class="block w-full p-2 border rounded-md shadow-sm form-input-dark" required>
+                    </div>
+                    <div>
+                        <label for="dueDate" class="block text-sm font-medium text-slate-300 mb-1">Due Date</label>
+                        <input type="date" id="dueDate" class="block w-full p-2 border rounded-md shadow-sm form-input-dark" required>
+                    </div>
+                    <div>
+                        <label for="priority" class="block text-sm font-medium text-slate-300 mb-1">Priority</label>
+                        <select id="priority" class="block w-full p-2 border rounded-md shadow-sm form-select-dark">
+                            <option>High</option>
+                            <option>Medium</option>
+                            <option>Low</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="status" class="block text-sm font-medium text-slate-300 mb-1">Status</label>
+                        <select id="status" class="block w-full p-2 border rounded-md shadow-sm form-select-dark">
+                            <option>Not Started</option>
+                            <option>In Progress</option>
+                            <option>On Hold</option>
+                            <option>Completed</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex justify-end gap-4 pt-4">
+                    <button type="button" id="cancelAddTask" class="bg-slate-600 text-slate-100 font-semibold py-2 px-4 rounded-lg hover:bg-slate-700">Cancel</button>
+                    <button type="submit" class="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700">Add Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+      let statusChart, priorityChart, timeSeriesChart;
+
+      function refreshDashboard() {
+        document.getElementById('loader').style.display = 'block';
+        document.getElementById('mainContent').classList.add('hidden');
+        google.script.run.withSuccessHandler(updateUI).withFailureHandler(showError).getDashboardMetrics();
+        google.script.run.withSuccessHandler(renderTaskList).withFailureHandler(showError).getTasks();
+      }
+
+      function updateUI(metrics) {
+        document.getElementById('kpi-total-tasks').textContent = metrics.totalTasks;
+        document.getElementById('kpi-completed').textContent = metrics.completed;
+        document.getElementById('kpi-in-progress').textContent = metrics.inProgress;
+        document.getElementById('kpi-overdue').textContent = metrics.overdue;
+        renderOrUpdateCharts(metrics);
+        document.getElementById('loader').style.display = 'none';
+        document.getElementById('mainContent').classList.remove('hidden');
+      }
+      
+      function renderTaskList(tasks) {
+          const taskListBody = document.getElementById('taskList');
+          taskListBody.innerHTML = ''; 
+          if (!tasks || tasks.length === 0) {
+              taskListBody.innerHTML = `<tr><td colspan="5" class="text-center text-slate-500 py-4">No tasks found.</td></tr>`;
+              return;
+          }
+          tasks.forEach(task => {
+              const row = document.createElement('tr');
+              row.className = 'hover:bg-slate-700 transition-colors';
+              row.innerHTML = `<td class="px-6 py-4 whitespace-nowrap text-slate-100">${task.name}</td><td class="px-6 py-4 whitespace-nowrap">${task.assignee}</td><td class="px-6 py-4 whitespace-nowrap">${task.dueDate}</td><td class="px-6 py-4 whitespace-nowrap">${getPriorityBadge(task.priority)}</td><td class="px-6 py-4 whitespace-nowrap"><select class="status-dropdown border rounded-md shadow-sm form-select-dark" data-task-id="${task.id}"><option ${task.status === 'Not Started' ? 'selected' : ''}>Not Started</option><option ${task.status === 'In Progress' ? 'selected' : ''}>In Progress</option><option ${task.status === 'On Hold' ? 'selected' : ''}>On Hold</option><option ${task.status === 'Completed' ? 'selected' : ''}>Completed</option></select></td>`;
+              taskListBody.appendChild(row);
+          });
+      }
+
+      function renderOrUpdateCharts(metrics) {
+        const jetColors = ['#2563eb', '#0891b2', '#facc15', '#f97316', '#ef4444', '#9333ea'];
+        const priorityColors = ['#ef4444', '#f97316', '#2563eb'];
+
+        // Common Chart Options
+        const commonOptions = {
+            theme: { mode: 'dark' },
+            chart: { background: 'transparent', toolbar: { show: false } },
+            grid: { borderColor: 'rgba(148, 163, 184, 0.2)' },
+            legend: { labels: { colors: '#94a3b8' } },
+            xaxis: { labels: { style: { colors: '#94a3b8' } }, axisBorder: { show: false } },
+            yaxis: { labels: { style: { colors: '#94a3b8' } } }
+        };
+
+        // Time Series Chart
+        const timeSeriesOptions = { ...commonOptions,
+            chart: { ...commonOptions.chart, type: 'area', height: 250 },
+            series: [{ name: 'Tasks Completed', data: metrics.completionTrend.map(d => d.count) }],
+            xaxis: { ...commonOptions.xaxis, categories: metrics.completionTrend.map(d => d.date) },
+            colors: ['#0ea5e9'],
+            stroke: { curve: 'smooth' },
+            dataLabels: { enabled: false },
+        };
+        if (!timeSeriesChart) {
+            timeSeriesChart = new ApexCharts(document.querySelector("#timeSeriesChart"), timeSeriesOptions);
+            timeSeriesChart.render();
+        } else {
+            timeSeriesChart.updateOptions(timeSeriesOptions);
+        }
+
+        // Status Chart
+        const statusOptions = { ...commonOptions,
+            chart: { ...commonOptions.chart, type: 'donut', height: 280 },
+            series: metrics.statusBreakdown.map(d => d.value),
+            labels: metrics.statusBreakdown.map(d => d.name),
+            colors: jetColors,
+            dataLabels: { enabled: false },
+            legend: { ...commonOptions.legend, position: 'bottom' },
+        };
+        if (!statusChart) {
+            statusChart = new ApexCharts(document.querySelector("#statusChart"), statusOptions);
+            statusChart.render();
+        } else {
+            statusChart.updateOptions(statusOptions);
+        }
+
+        // Priority Chart
+        const priorityOptions = { ...commonOptions,
+            chart: { ...commonOptions.chart, type: 'bar', height: 280 },
+            series: [{ name: 'Task Count', data: metrics.priorityBreakdown.map(d => d.value) }],
+            xaxis: { ...commonOptions.xaxis, categories: metrics.priorityBreakdown.map(d => d.name) },
+            colors: priorityColors,
+            plotOptions: { bar: { horizontal: true, barHeight: '50%', distributed: true } },
+            dataLabels: { enabled: false },
+            legend: { show: false }
+        };
+        if (!priorityChart) {
+            priorityChart = new ApexCharts(document.querySelector("#priorityChart"), priorityOptions);
+            priorityChart.render();
+        } else {
+            priorityChart.updateOptions(priorityOptions);
+        }
+      }
+
+      function getPriorityBadge(priority) {
+          const colors = { 'High': 'bg-red-500/20 text-red-400 border border-red-500/30', 'Medium': 'bg-yellow-400/20 text-yellow-300 border border-yellow-400/30', 'Low': 'bg-blue-500/20 text-blue-300 border border-blue-500/30' };
+          return `<span class="px-2 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full ${colors[priority] || 'bg-slate-600 text-slate-300'}">${priority}</span>`;
+      }
+
+      function showError(error) { alert('An error occurred: ' + error.message); console.error(error); document.getElementById('loader').style.display = 'none'; }
+      
+      // --- EVENT LISTENERS ---
+      document.addEventListener('DOMContentLoaded', refreshDashboard);
+      document.getElementById('showAddTaskModal').addEventListener('click', () => addTaskModal.classList.remove('hidden'));
+      document.getElementById('cancelAddTask').addEventListener('click', () => addTaskModal.classList.add('hidden'));
+      document.getElementById('addTaskForm').addEventListener('submit', (e) => {
+          e.preventDefault();
+          const taskData = { name: document.getElementById('taskName').value, assignee: document.getElementById('assignee').value, dueDate: document.getElementById('dueDate').value, priority: document.getElementById('priority').value, status: document.getElementById('status').value };
+          google.script.run.withSuccessHandler(() => { addTaskModal.classList.add('hidden'); document.getElementById('addTaskForm').reset(); refreshDashboard(); }).withFailureHandler(showError).addTask(taskData);
+      });
+      document.getElementById('taskList').addEventListener('change', (e) => {
+          if (e.target.classList.contains('status-dropdown')) {
+              const taskId = e.target.dataset.taskId;
+              const newStatus = e.target.value;
+              google.script.run.withSuccessHandler(refreshDashboard).withFailureHandler(showError).updateTaskStatus(taskId, newStatus);
+          }
+      });
+    </script>
+  </body>
+</html>
