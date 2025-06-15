@@ -7,89 +7,194 @@
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-      body { 
-        font-family: 'Inter', sans-serif; 
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #0f172a; /* Even darker slate */
       }
-      .kpi-card { 
-        transition: all 0.2s ease-in-out; 
+
+      /* --- Animation Keyframes --- */
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
       }
-      .kpi-card:hover { 
-        transform: translateY(-5px); 
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); 
+
+      @keyframes slideInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
       }
-      #loader { 
-        border-top-color: #3b82f6;
+
+      @keyframes pulse-border {
+        0%, 100% {
+          box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+        }
+        50% {
+          box-shadow: 0 0 0 4px rgba(59, 130, 246, 0);
+        }
       }
-      .form-input-dark {
-        background-color: #374151;
-        border-color: #4b5563;
-        color: #f3f4f6;
+
+      /* --- Main Container & Header --- */
+      #app {
+        animation: fadeIn 0.5s ease-in-out;
       }
-      .form-input-dark:focus {
+
+      header {
+        animation: slideInUp 0.6s ease-in-out;
+      }
+
+      /* --- KPI Cards Enhancement --- */
+      .kpi-card-container {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        gap: 1.5rem;
+      }
+
+      @media (min-width: 768px) {
+        .kpi-card-container {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (min-width: 1024px) {
+        .kpi-card-container {
+          grid-template-columns: repeat(4, 1fr);
+        }
+      }
+
+      .kpi-card {
+        background: linear-gradient(145deg, #1e293b, #2c3e50);
+        border: 1px solid #334155;
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+        transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        animation: slideInUp 0.7s ease-in-out;
+      }
+
+      .kpi-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background-color: var(--border-color);
+        transition: all 0.3s ease;
+      }
+
+      .kpi-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+        border-color: var(--border-color);
+      }
+
+      /* --- Chart & Table Containers --- */
+      .chart-container, .table-container {
+        background: #1e293b;
+        border: 1px solid #334155;
+        padding: 1.5rem;
+        border-radius: 1rem;
+        box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+        animation: slideInUp 0.8s ease-in-out;
+      }
+
+      /* --- Modal Enhancements --- */
+      #addTaskModal {
+        background-color: rgba(15, 23, 42, 0.8);
+        backdrop-filter: blur(5px);
+      }
+
+      .modal-content {
+        background: linear-gradient(145deg, #1e293b, #0f172a);
+        border: 1px solid #475569;
+        border-radius: 1rem;
+        box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+        animation: slideInUp 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+      }
+
+      /* --- Form Elements --- */
+      .form-input-dark, .form-select-dark {
+        background-color: #334155;
+        border: 1px solid #475569;
+        color: #e2e8f0;
+        transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+      }
+
+      .form-input-dark:focus, .form-select-dark:focus {
         border-color: #4f46e5;
-        box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.5);
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.5);
+        outline: none;
       }
+      
       .form-select-dark {
-        /* Reset browser-native appearance */
         -webkit-appearance: none;
         -moz-appearance: none;
         appearance: none;
-
-        /* Custom arrow styling */
         background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
         background-repeat: no-repeat;
         background-position: right 0.5rem center;
         background-size: 1.5em 1.5em;
-        padding-right: 2.5rem; /* Add space for the arrow */
-
-        /* Base styles */
-        background-color: #374151;
-        border-color: #4b5563;
-        color: #f3f4f6;
+        padding-right: 2.5rem;
       }
+
+      /* --- Loader --- */
+      #loader {
+        border-top-color: #3b82f6;
+        animation: spin 1s linear infinite, pulse-border 2s linear infinite;
+      }
+
+      /* --- Utility for Staggered Animations --- */
+      .stagger-in > * {
+        animation: slideInUp 0.7s ease-in-out backwards;
+      }
+
+      .stagger-in > *:nth-child(1) { animation-delay: 0.1s; }
+      .stagger-in > *:nth-child(2) { animation-delay: 0.2s; }
+      .stagger-in > *:nth-child(3) { animation-delay: 0.3s; }
+      .stagger-in > *:nth-child(4) { animation-delay: 0.4s; }
+
     </style>
   </head>
   <body class="bg-slate-900 text-slate-200">
     <div id="app" class="container mx-auto p-4 md:p-6">
-      <!-- Header -->
       <header class="mb-6">
         <h1 class="text-3xl font-bold text-white">Executive Task Dashboard</h1>
         <p class="text-slate-400 mt-1">Real-time overview of project status and team performance.</p>
       </header>
 
-      <!-- Loading Spinner -->
       <div id="loader" class="w-16 h-16 border-4 border-slate-700 border-solid rounded-full animate-spin mx-auto mt-20"></div>
-      
-      <!-- Main Content -->
+
       <main id="mainContent" class="hidden">
-        <!-- KPI Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-          <div class="kpi-card bg-slate-800 p-6 rounded-xl shadow-lg border-l-4 border-blue-500"><h2 class="text-slate-400 text-sm font-medium">TOTAL TASKS</h2><p id="kpi-total-tasks" class="text-3xl font-bold mt-1 text-white">0</p></div>
-          <div class="kpi-card bg-slate-800 p-6 rounded-xl shadow-lg border-l-4 border-green-500"><h2 class="text-slate-400 text-sm font-medium">COMPLETED</h2><p id="kpi-completed" class="text-3xl font-bold mt-1 text-white">0</p></div>
-          <div class="kpi-card bg-slate-800 p-6 rounded-xl shadow-lg border-l-4 border-yellow-500"><h2 class="text-slate-400 text-sm font-medium">IN PROGRESS</h2><p id="kpi-in-progress" class="text-3xl font-bold mt-1 text-white">0</p></div>
-          <div class="kpi-card bg-slate-800 p-6 rounded-xl shadow-lg border-l-4 border-red-500"><h2 class="text-slate-400 text-sm font-medium">OVERDUE</h2><p id="kpi-overdue" class="text-3xl font-bold mt-1 text-white">0</p></div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6 stagger-in">
+          <div class="kpi-card" style="--border-color: #3b82f6;"><h2 class="text-slate-400 text-sm font-medium p-6">TOTAL TASKS</h2><p id="kpi-total-tasks" class="text-3xl font-bold mt-1 text-white p-6 pt-0">0</p></div>
+          <div class="kpi-card" style="--border-color: #22c55e;"><h2 class="text-slate-400 text-sm font-medium p-6">COMPLETED</h2><p id="kpi-completed" class="text-3xl font-bold mt-1 text-white p-6 pt-0">0</p></div>
+          <div class="kpi-card" style="--border-color: #f59e0b;"><h2 class="text-slate-400 text-sm font-medium p-6">IN PROGRESS</h2><p id="kpi-in-progress" class="text-3xl font-bold mt-1 text-white p-6 pt-0">0</p></div>
+          <div class="kpi-card" style="--border-color: #ef4444;"><h2 class="text-slate-400 text-sm font-medium p-6">OVERDUE</h2><p id="kpi-overdue" class="text-3xl font-bold mt-1 text-white p-6 pt-0">0</p></div>
         </div>
 
-        <!-- Charts Section -->
         <div class="space-y-6">
-            <div class="bg-slate-800 p-6 rounded-xl shadow-lg"><h3 class="font-semibold text-lg mb-4 text-white">Task Completions This Week</h3><div id="timeSeriesChart"></div></div>
+            <div class="chart-container"><h3 class="font-semibold text-lg mb-4 text-white">Task Completions This Week</h3><div id="timeSeriesChart"></div></div>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div class="bg-slate-800 p-6 rounded-xl shadow-lg"><h3 class="font-semibold text-lg mb-4 text-white">Task Status Breakdown</h3><div id="statusChart"></div></div>
-                <div class="bg-slate-800 p-6 rounded-xl shadow-lg"><h3 class="font-semibold text-lg mb-4 text-white">Tasks by Priority</h3><div id="priorityChart"></div></div>
+                <div class="chart-container"><h3 class="font-semibold text-lg mb-4 text-white">Task Status Breakdown</h3><div id="statusChart"></div></div>
+                <div class="chart-container"><h3 class="font-semibold text-lg mb-4 text-white">Tasks by Priority</h3><div id="priorityChart"></div></div>
             </div>
         </div>
 
-        <!-- Task List -->
-        <div class="bg-slate-800 p-6 rounded-xl shadow-lg mt-6">
+        <div class="table-container mt-6">
           <div class="flex flex-wrap justify-between items-center mb-4 gap-4"><h3 class="font-semibold text-lg text-white">Master Task List</h3><button id="showAddTaskModal" class="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 transition">Add New Task</button></div>
           <div class="overflow-x-auto"><table class="min-w-full divide-y divide-slate-700"><thead class="bg-slate-700"><tr><th class="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">Task Name</th><th class="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">Assignee</th><th class="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">Due Date</th><th class="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">Priority</th><th class="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">Status</th></tr></thead><tbody id="taskList" class="bg-slate-800 divide-y divide-slate-700"></tbody></table></div>
         </div>
       </main>
     </div>
 
-    <!-- Add Task Modal -->
     <div id="addTaskModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden">
-        <div class="bg-slate-800 p-8 rounded-lg shadow-xl max-w-lg w-full border border-slate-700">
+        <div class="modal-content p-8 max-w-lg w-full">
             <h2 class="text-2xl font-bold mb-6 text-white">Add New Task</h2>
             <form id="addTaskForm" class="space-y-4">
                 <div>
