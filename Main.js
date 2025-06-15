@@ -1,6 +1,6 @@
 // --- CONFIGURATION ---
 // IMPORTANT: Replace this with the ID of your Google Sheet.
-const SHEET_ID = '1FRM07vAV6q54pYGOLLOPs-lOmLYK5DTMH7FAu6OmO70'; 
+const SHEET_ID = 'SHEET_ID'; 
 const SHEET_NAME = 'Tasks'; // The name of the tab/sheet where tasks are stored.
 
 /**
